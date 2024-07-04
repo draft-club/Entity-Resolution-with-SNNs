@@ -1,0 +1,79 @@
+{  
+        
+        "ifu": {
+            "features": [
+                "ifu"
+            ]
+        },
+        
+        "adresse": {
+            "features": [
+                "adrese_personnelle"
+            ]
+        },
+        "nom_prenom": { 
+            "features": [
+                "nom_prenom"
+            ]
+        },
+        
+                "nom": { 
+            "features": [
+                "nom"
+            ]
+        },
+        
+                        "prenom": { 
+            "features": [
+                "prenom"
+            ]
+        },
+        
+        
+        
+        "acronym_nom_prenom": {
+            "features": [
+                "acronym_nom_prenom"
+            ]
+        },
+
+        
+        
+        "numero_adhesion_cnss": {
+            "features": [
+                "ie_num_cnss"
+            ]
+        },
+        
+        "num_cin": {
+            "features": [
+               "num_cin"
+            ]
+        },
+       
+        "nom_arabe": {
+            "features": [
+                "nom_arabe"
+            ]
+        },
+        "prenoms_arabe": {
+            "features": [
+                "prenoms_arabe"
+            ]
+        },
+
+        "num_ce": {
+            "features": [
+                "num_ce"
+            ]
+        },
+
+        "num_ppr" : {
+            "features": [
+                "num_ppr" 
+            ]
+        }
+    }
+
+
+

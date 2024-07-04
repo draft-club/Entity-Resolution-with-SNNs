@@ -1,0 +1,8 @@
+pandas
+numpy
+geopy
+openpyxl
+tabulate
+python-dotenv
+tensorflow
+kerastuner
