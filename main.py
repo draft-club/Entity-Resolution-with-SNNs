@@ -9,8 +9,29 @@ from snn_model import SiameseNetwork
 from tuner import SNNTuner
 from constants import INPUT_FOLDER, OUTPUT_FOLDER, DICTIONARY_FOLDER
 
+def gpu_check(func):
+    """
+    Decorator to check the availability of GPUs before executing a function.
+    """
+    def wrapper(*args, **kwargs):
+        print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
+        return func(*args, **kwargs)
+    return wrapper
 
 def prepare_datasets(pairs_train, labels_train, pairs_val, labels_val, batch_size):
+    """
+    Prepares training and validation datasets for mini-batch training.
+
+    Args:
+        pairs_train (numpy.ndarray): Training data pairs.
+        labels_train (numpy.ndarray): Training data labels.
+        pairs_val (numpy.ndarray): Validation data pairs.
+        labels_val (numpy.ndarray): Validation data labels.
+        batch_size (int): Size of the mini-batch.
+
+    Returns:
+        tuple: TensorFlow datasets for training and validation.
+    """
     train_dataset = tf.data.Dataset.from_tensor_slices(((pairs_train[:, 0], pairs_train[:, 1]), labels_train))
     train_dataset = train_dataset.shuffle(buffer_size=1024).batch(batch_size)
 
@@ -19,11 +40,11 @@ def prepare_datasets(pairs_train, labels_train, pairs_val, labels_val, batch_siz
 
     return train_dataset, val_dataset
 
-
+@gpu_check
 def main():
-    # Check GPU availability
-    print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
-
+    """
+    Main function to execute the data processing and model training pipeline.
+    """
     input_path = os.path.join(INPUT_FOLDER, 'filtered_mapped_transformed_contribuable_last_call.csv')
     dict_path = os.path.join(DICTIONARY_FOLDER, 'mapping_dts.json')
     output_path = os.path.join(OUTPUT_FOLDER, 'output.csv')
@@ -39,13 +60,7 @@ def main():
 
     # Describe
     describer = DataFrameDescriber(mapper.df)
-    describer.get_info()
-    describer.get_description()
-    describer.get_missing_values()
-    describer.get_missing_values_percentage_by_column()
-    describer.get_missing_values_percentage_by_row()
-    describer.get_unique_values()
-
+    describer.describe_all()
 
     # Normalize
     normalizer = AddressNormalization(mapper.df)
@@ -72,7 +87,6 @@ def main():
     snn = SiameseNetwork(input_shape)
     model = snn.build_model(best_hps)
     snn.train(model, train_dataset, val_dataset)
-
 
 if __name__ == '__main__':
     main()

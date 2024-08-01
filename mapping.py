@@ -1,34 +1,22 @@
-import json
+import pandas as pd
 
+class DataFrameProcessor:
+    """
+    Class to process DataFrame by dropping columns with high NaNs.
+    """
 
-class DataFrameMapper:
+    def __init__(self, input_path):
+        self.input_path = input_path
+        self.df = pd.read_csv(input_path)
 
-    def __init__(self, df, dict_path):
-        self.dict_path = dict_path
-        self.df = df
-        self.mapping_dict = self.load_mapping_dict()
+    def drop_columns_with_high_nas(self, threshold=0.6):
+        """
+        Drop columns from DataFrame with more than `threshold` NaN values.
 
-
-    def load_mapping_dict(self):
-        """Load the mapping dictionary from the specified JSON path."""
-        try:
-            with open(self.dict_path, 'r') as file:
-                return json.load(file)
-        except Exception as e:
-            raise FileNotFoundError(f"Failed to load mapping dictionary: {e}")
-
-    def apply_mapping(self):
-        """Apply the mapping from the dictionary to the dataframe columns."""
-        for new_col, details in self.mapping_dict.items():
-            original_col = details['features'][0]
-            if original_col in self.df.columns:
-                self.df.rename(columns={original_col: new_col}, inplace=True)
-
-    def filter_columns(self):
-        """Filter the DataFrame to keep only the columns listed in the mapping dictionary keys."""
-        keep_columns = [self.mapping_dict[key]['features'][0] for key in self.mapping_dict if self.mapping_dict[key]['features'][0] in self.df.columns]
-        self.df = self.df[keep_columns]
-
-
-
-
+        Args:
+            threshold (float): Proportion of NaN values to drop the column.
+        """
+        na_counts = self.df.isna().sum()
+        columns_to_drop = na_counts[na_counts / len(self.df) > threshold].index
+        self.df.drop(columns=columns_to_drop, inplace=True)
+        print(f"Dropped columns with more than {threshold * 100}% NaN values.")
